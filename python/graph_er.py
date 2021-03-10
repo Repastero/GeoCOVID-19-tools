@@ -1,0 +1,187 @@
+# -*- coding: utf-8 -*-
+
+import sys
+import os.path
+import matplotlib.pyplot as plt
+from statistics import median
+
+# Modificador de acuerdo a los municipios no simulados
+TOWNS_MOD = {
+'parana': 1.3714430956,
+'concordia': 1.116566633,
+'gualeguaychu': 1.316966649,
+'uruguay': 1.3661924073,
+'federacion': 1.9724517906,
+'lapaz': 2.5923357099,
+'colon': 2.5029192672,
+'gualeguay': 1.2063289079,
+'villaguay': 1.4136616913,
+'diamante': 2.3261916708,
+'nogoya': 1.6465277192,
+'victoria': 1.1232648703,
+'federal': 1.4356369692,
+'tala': 1.8702178824,
+'sansalvador': 1.3121409132,
+'feliciano': 1.2478483946,
+'ibicuy': 2.4646938776}
+
+RUNS_INDEX = 0 # fijo
+TICKS_INDEX = 1 # fijo
+
+SCENARIO_NAMES = ['Parana', 'Gualeguaychu', 'Concordia'] # en orden
+PMUC_BEDS_FILE = 'CamasUTI_ER_aprox.csv'
+
+def get_header_index(headers, value):
+    _ = -1
+    try:
+        _ = headers.index(value)
+    except:
+        print('Header erroneo')
+    return _
+
+# Chequear que existan el parametro ID
+if len(sys.argv) > 1:
+    JOB_ID = sys.argv[1]
+else:
+    sys.exit("Error falta 'SLURM_JOB_ID'")
+SINK_FILES = [f'parana_{JOB_ID}.csv', f'gualeguaychu_{JOB_ID}.csv', f'concordia_{JOB_ID}.csv'] # en orden
+PARAMS_FILES = [f'parana_param_{JOB_ID}.csv', f'gualeguaychu_param_{JOB_ID}.csv', f'concordia_param_{JOB_ID}.csv'] # en orden
+
+# Chequear que existan los 6 archivos + archivo de camas
+missing_files = []
+for file_name in SINK_FILES + PARAMS_FILES + [PMUC_BEDS_FILE]:
+    if not os.path.isfile(file_name):
+        missing_files.append(file_name)
+if missing_files:
+    print("Error falta/n archivo/s:", ", ".join(missing_files))
+    sys.exit()
+
+# Leer cada PARAMS_FILES y SINK_FILES, y procesar en orden
+full_median_beds = []
+full_median_beds_mod = []
+for x in range(len(SCENARIO_NAMES)):
+    param_file = PARAMS_FILES[x]
+    sink_file = SINK_FILES[x]
+    
+    # Leer ciudades simuladas
+    towns = []
+    with open(param_file, 'r') as fp:
+        line = fp.readline() # header
+        headers = eval(line)
+        town_index = get_header_index(headers, 'nombreMunicipio')
+        if town_index > -1:
+            for line in fp.readlines():
+                splited = eval(line)
+                towns.append(splited[town_index])
+        else:
+            sys.exit("Error falta parametro 'nombreMunicipio'")
+    
+    # Leer camas
+    beds_list = [[[]]]
+    deaths_list = []
+    last_deaths = 0
+    index = 0
+    with open(sink_file, 'r') as fp:
+        line = fp.readline() # header
+        headers = eval(line)
+        beds_index = get_header_index(headers, 'Camas')
+        deaths_index = get_header_index(headers, 'Muertos')
+        if beds_index > -1 and deaths_index > -1:
+            runs = -1
+            prev_run, prev_tick = -1, -1
+            for line in fp.readlines():
+                splited = line[:-1].split(',') # borrar /n
+                prev_run = runs
+                runs = int(float(splited[RUNS_INDEX])) # Runs
+                ticks = int(float(splited[TICKS_INDEX])) # Ticks
+                if prev_tick > ticks: # nueva corrida
+                    # chequea si ya hay corridas de la misma ciudad
+                    if len(beds_list) < runs:
+                        beds_list.append([[]])
+                    else:
+                        beds_list[runs-1].append([])
+                    # chequea si ya hay muertos de la misma ciudad
+                    if len(deaths_list) >= prev_run:
+                        deaths_list[prev_run-1].append(last_deaths)
+                    else:
+                        deaths_list.append([last_deaths])
+                    #
+                    index = len(beds_list[runs-1]) - 1
+                prev_tick = ticks
+                beds = int(float(splited[beds_index])) # Camas
+                beds_list[runs-1][index].append(beds)
+                last_deaths = int(float(splited[deaths_index])) # Muertos
+            # falta el ultimo muerto
+            if len(deaths_list) >= prev_run:
+                deaths_list[prev_run-1].append(last_deaths)
+            else:
+                deaths_list.append([last_deaths])
+            #
+        else:
+            sys.exit("Error faltan valores 'Camas' y/o 'Muertos'")
+    
+    # Calcular cantidad de muertos
+    median_deaths_sum = 0
+    median_deaths_mod_sum = 0
+    for i in range(len(deaths_list)):
+        _ = median(deaths_list[i])
+        median_deaths_sum += _
+        median_deaths_mod_sum += _ * TOWNS_MOD[towns[i]]
+    print(f"Departamentos tipo {SCENARIO_NAMES[x]} | Muertos: {median_deaths_sum:.2f} | Muertos mod: {median_deaths_mod_sum:.2f}")
+    
+    # Calcula cantidad de dias minimos
+    min_days = 9999
+    for i in range(len(beds_list)):
+        for j in range(len(beds_list[i])):
+            _ = len(beds_list[i][j])
+            if _ < min_days:
+                min_days = _
+    
+    # Calcular medianas hasta aca
+    total_median_beds = []
+    total_median_beds_mod = []
+    for j in range(len(beds_list)):
+        multipl = TOWNS_MOD[towns[j]]
+        total_median_beds.append([])
+        total_median_beds_mod.append([])
+        for i in range(min_days):
+            median_beds = []
+            for beds in beds_list[j]:
+                median_beds.append(beds[i])
+            _ = median(median_beds)
+            total_median_beds[j].append(_)
+            total_median_beds_mod[j].append(_ * multipl)
+    
+    # Por ultimo sumar todos
+    if not full_median_beds:
+        full_median_beds = [0] * min_days
+        full_median_beds_mod = [0] * min_days
+    for i in range(min_days):
+        bsum, bsum_mod = 0, 0
+        for j in range(len(total_median_beds)):
+            bsum += total_median_beds[j][i]
+            bsum_mod += total_median_beds_mod[j][i]
+        full_median_beds[i] += bsum
+        full_median_beds_mod[i] += bsum_mod
+
+# Leer camas PMUC
+pmuc_beds_list = []
+with open(PMUC_BEDS_FILE, 'r') as fp:
+    for line in fp.readlines():
+        splited = line[:-1].split(';') # borrar /n
+        pmuc_beds_list.append(int(float(splited[0])))
+
+# Queda graficar nomas
+plt.style.use('dark_background')
+plt.figure(figsize=(16, 4))
+plt.title(f"Entre Rios x {index + 1}")
+plt.plot(range(min_days), full_median_beds, 'b-o') # en azul camas sin modificar
+plt.plot(range(min_days), full_median_beds_mod, 'r-o') # en rojo camas modificadas
+plt.plot(range(len(pmuc_beds_list)), pmuc_beds_list, 'w') # en blanco camas pmuc
+plt.xticks(range(0, min_days + 1, 10))
+plt.yticks(range(0, int(max(full_median_beds_mod)) + 10, 10))
+plt.xlim([0, min_days])
+plt.grid(axis='both', color='grey', linestyle='--', linewidth=.5)
+
+# Guardar imagen
+plt.savefig(f"entrerios_{JOB_ID}.png", bbox_inches='tight')
