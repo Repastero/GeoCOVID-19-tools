@@ -28,6 +28,8 @@ TOWNS_MOD = {
 RUNS_INDEX = 0 # fijo
 TICKS_INDEX = 1 # fijo
 
+Y_AXIS_SCALE = 150 # para don Rufiner, mantener la escala
+
 SCENARIO_NAMES = ['Parana', 'Gualeguaychu', 'Concordia'] # en orden
 PMUC_BEDS_FILE = 'CamasUTI_ER_aprox.csv'
 
@@ -59,22 +61,26 @@ if missing_files:
 # Leer cada PARAMS_FILES y SINK_FILES, y procesar en orden
 full_median_beds = []
 full_median_beds_mod = []
+sim_max_days = -1
 for x in range(len(SCENARIO_NAMES)):
     param_file = PARAMS_FILES[x]
     sink_file = SINK_FILES[x]
     
     # Leer ciudades simuladas
     towns = []
+    max_days = []
     with open(param_file, 'r') as fp:
         line = fp.readline() # header
         headers = eval(line)
         town_index = get_header_index(headers, 'nombreMunicipio')
-        if town_index > -1:
+        days_index = get_header_index(headers, 'diasSimulacion')
+        if town_index > -1 and days_index > -1:
             for line in fp.readlines():
                 splited = eval(line)
                 towns.append(splited[town_index])
+                max_days.append(splited[days_index])
         else:
-            sys.exit("Error falta parametro 'nombreMunicipio'")
+            sys.exit("Error falta parametro 'nombreMunicipio' y/o 'diasSimulacion'")
     
     # Leer camas
     beds_list = [[[]]]
@@ -130,12 +136,15 @@ for x in range(len(SCENARIO_NAMES)):
     print(f"Departamentos tipo {SCENARIO_NAMES[x]} | Muertos: {median_deaths_sum:.2f} | Muertos mod: {median_deaths_mod_sum:.2f}")
     
     # Calcula cantidad de dias minimos
-    min_days = 9999
+    if sim_max_days == -1: # supongo que el primer modelo simulado (parana) es el que mas dias tiene
+        sim_max_days = max(max_days) + 1 # +1 por dia 0
+    min_days = sim_max_days # ahora min es igual a max
     for i in range(len(beds_list)):
         for j in range(len(beds_list[i])):
             _ = len(beds_list[i][j])
-            if _ < min_days:
-                min_days = _
+            while _ < sim_max_days:
+                beds_list[i][j].insert(0, 0)
+                _ += 1
     
     # Calcular medianas hasta aca
     total_median_beds = []
@@ -180,6 +189,7 @@ plt.plot(range(min_days), full_median_beds_mod, 'r-o') # en rojo camas modificad
 plt.plot(range(len(pmuc_beds_list)), pmuc_beds_list, 'w') # en blanco camas pmuc
 plt.xticks(range(0, min_days + 1, 10))
 plt.yticks(range(0, int(max(full_median_beds_mod)) + 10, 10))
+plt.ylim([0, Y_AXIS_SCALE])
 plt.xlim([0, min_days])
 plt.grid(axis='both', color='grey', linestyle='--', linewidth=.5)
 
