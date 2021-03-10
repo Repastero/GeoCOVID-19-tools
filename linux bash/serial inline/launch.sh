@@ -16,10 +16,10 @@ do
         -pxml ./$SCENARIO_FOLDER/batch_params.xml \
         -scenario ./$SCENARIO_FOLDER \
         -id $i \
-'1	cantidadMuertosLimite	300,corridas	1,diaEntradaCaso	0,diasSimulacion	243,diasMinimoSimulacion	243,nombreMunicipio	parana,diaInicioSimulacion	183,cantidadInfectados	1
-2	cantidadMuertosLimite	300,corridas	1,diaEntradaCaso	0,diasSimulacion	243,diasMinimoSimulacion	243,nombreMunicipio	parana,diaInicioSimulacion	183,cantidadInfectados	1
-3	cantidadMuertosLimite	300,corridas	1,diaEntradaCaso	0,diasSimulacion	243,diasMinimoSimulacion	243,nombreMunicipio	parana,diaInicioSimulacion	183,cantidadInfectados	1
-4	cantidadMuertosLimite	300,corridas	1,diaEntradaCaso	0,diasSimulacion	243,diasMinimoSimulacion	243,nombreMunicipio	parana,diaInicioSimulacion	183,cantidadInfectados	1' &
+'1	cantidadMuertosLimite	400,corridas	1,diaEntradaCaso	0,diasSimulacion	244,diasMinimoSimulacion	244,nombreMunicipio	parana,diaInicioSimulacion	182,cantidadInfectados	1
+2	cantidadMuertosLimite	400,corridas	1,diaEntradaCaso	0,diasSimulacion	244,diasMinimoSimulacion	244,nombreMunicipio	parana,diaInicioSimulacion	182,cantidadInfectados	1
+3	cantidadMuertosLimite	400,corridas	1,diaEntradaCaso	0,diasSimulacion	244,diasMinimoSimulacion	244,nombreMunicipio	parana,diaInicioSimulacion	182,cantidadInfectados	1
+4	cantidadMuertosLimite	400,corridas	1,diaEntradaCaso	0,diasSimulacion	244,diasMinimoSimulacion	244,nombreMunicipio	parana,diaInicioSimulacion	182,cantidadInfectados	1' &
     sleep 2
 done
 wait
