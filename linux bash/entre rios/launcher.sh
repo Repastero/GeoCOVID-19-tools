@@ -1,9 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=ENTRER_24
+#SBATCH --job-name=ENTRE_24
 #SBATCH --ntasks=24
 
 SCENARIO_FOLDER=scenario.rs
 PARAM_FILE=unrolledParamFile.txt
+INSTANCES=1 # instancias paralelas por cpu
 
 OUTPUT_CSV=`date +"%d-%m-%Y-%H-%M"`.csv
 START=`date +%s`
@@ -15,14 +16,17 @@ for (( sc=0; sc<"${#SCENARIO_NAMES[*]}"; sc++ )) do
 	cur_scenario=${SCENARIO_NAMES[$sc]}
 	cd ${SCENARIO_FOLDERS[$sc]}
 	echo "Iniciando scenario $cur_scenario"
-	for (( i=1; i<=$SLURM_NTASKS; i++ )) do
-		echo "Iniciando $i task de $SLURM_NTASKS"
-		srun --ntasks=1 java -Xmn512m -cp './lib/*' repast.simphony.batch.InstanceRunner \
-			-pxml ./$SCENARIO_FOLDER/batch_params.xml \
-			-scenario ./$SCENARIO_FOLDER \
-			-id $i \
-			-pinput $PARAM_FILE &
-	   sleep 2
+	for (( i=1; i<=$INSTANCES; i++ )) do
+		echo "Iniciando instancia $i en $SLURM_NTASKS tasks"
+		for (( j=1; j<=$SLURM_NTASKS; j++ )) do
+			echo "Task $j de $SLURM_NTASKS"
+			srun --ntasks=1 java -Xmn512m -cp './lib/*' repast.simphony.batch.InstanceRunner \
+				-pxml ./$SCENARIO_FOLDER/batch_params.xml \
+				-scenario ./$SCENARIO_FOLDER \
+				-id $i$j \
+				-pinput $PARAM_FILE &
+		   sleep 2
+		done
 	done
 	wait
 	echo "Uniendo archivos de scenario $cur_scenario"
@@ -42,9 +46,13 @@ for (( sc=0; sc<"${#SCENARIO_NAMES[*]}"; sc++ )) do
 	cd ..
 done
 
-# graficar camas con los archivos de salida
-source ~/python3-ve/bin/activate
-python graph_er.py $SLURM_JOB_ID
-deactivate
+# genera grafica unicamente si corrio los 3 escenarios
+if [[ $sc -eq 3 ]] ; then 
+	echo "Creando grafica de camas"
+	source ~/python3-ve/bin/activate
+	python graph_er.py $SLURM_JOB_ID
+	deactivate
+fi
+#
 
 echo "Duracion total $((($(date +%s)-$START)/60)) minutos"

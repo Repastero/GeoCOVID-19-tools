@@ -1,4 +1,4 @@
-# Para simular todos Entre Rios
+# Para simular todo Entre Rios
 - Crear entorno virtual Python
 - Copiar el script en python para graficar: graph_er.py
 - Copiar el archivo con informacion diaria de camas en ER
@@ -16,3 +16,10 @@ MessageCenter.log4j.properties
 ```
 - Modificar el archivo si se utilizan otros directorios
 - Opcional: usar los archivos de parametros dados
+
+## Para simular solo uno o dos modelos
+- Eliminar de las lista los que no se van a utilizar
+```
+SCENARIO_FOLDERS=(pna gchu concord)
+SCENARIO_NAMES=(parana gualeguaychu concordia)
+```
