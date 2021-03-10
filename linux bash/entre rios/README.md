@@ -1,6 +1,7 @@
 # Para simular todos Entre Rios
 - Crear entorno virtual Python
 - Copiar el script en python para graficar: graph_er.py
+- Copiar el archivo con informacion diaria de camas en ER
 - Cargar los tres modelos (pna, gchu y concord)
 - El orden de los directorios por defecto es el siguiente:
 ```
