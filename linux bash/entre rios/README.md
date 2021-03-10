@@ -12,6 +12,7 @@ pna/ (modelo parana)
 gchu/ (modelo gualeguaychu)
 concord/ (modelo concordia)
 ~/python3-ve/ (entorno virtual Python)
+MessageCenter.log4j.properties
 ```
 - Modificar el archivo si se utilizan otros directorios
 - Opcional: usar los archivos de parametros dados
