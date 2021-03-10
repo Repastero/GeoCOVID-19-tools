@@ -6,24 +6,25 @@ import matplotlib.pyplot as plt
 from statistics import median
 
 # Modificador de acuerdo a los municipios no simulados
+# (poblacion_depto / poblacion_ciudad) * (100 - (cant_municipios - 1)) / 100
 TOWNS_MOD = {
-'parana': 1.3714430956,
-'concordia': 1.116566633,
-'gualeguaychu': 1.316966649,
-'uruguay': 1.3661924073,
-'federacion': 1.9724517906,
-'lapaz': 2.5923357099,
-'colon': 2.5029192672,
-'gualeguay': 1.2063289079,
-'villaguay': 1.4136616913,
-'diamante': 2.3261916708,
-'nogoya': 1.6465277192,
-'victoria': 1.1232648703,
-'federal': 1.4356369692,
-'tala': 1.8702178824,
-'sansalvador': 1.3121409132,
-'feliciano': 1.2478483946,
-'ibicuy': 2.4646938776}
+'parana': 1.1794410622,
+'concordia': 1.0384069687,
+'gualeguaychu': 1.2116093171,
+'uruguay': 1.2159112425,
+'federacion': 1.8343801653,
+'lapaz': 2.3849488531,
+'colon': 2.3777733038,
+'gualeguay': 1.1701390407,
+'villaguay': 1.3429786067,
+'diamante': 2.1866201706,
+'nogoya': 1.547736056,
+'victoria': 1.1007995729,
+'federal': 1.3782114904,
+'tala': 1.8141113459,
+'sansalvador': 1.285898095,
+'feliciano': 1.2228914267,
+'ibicuy': 2.3907530612}
 
 RUNS_INDEX = 0 # fijo
 TICKS_INDEX = 1 # fijo
@@ -62,6 +63,8 @@ if missing_files:
 full_median_beds = []
 full_median_beds_mod = []
 sim_max_days = -1
+median_deaths_sum = 0
+median_deaths_mod_sum = 0
 for x in range(len(SCENARIO_NAMES)):
     param_file = PARAMS_FILES[x]
     sink_file = SINK_FILES[x]
@@ -127,13 +130,12 @@ for x in range(len(SCENARIO_NAMES)):
             sys.exit("Error faltan valores 'Camas' y/o 'Muertos'")
     
     # Calcular cantidad de muertos
-    median_deaths_sum = 0
-    median_deaths_mod_sum = 0
     for i in range(len(deaths_list)):
-        _ = median(deaths_list[i])
-        median_deaths_sum += _
-        median_deaths_mod_sum += _ * TOWNS_MOD[towns[i]]
-    print(f"Departamentos tipo {SCENARIO_NAMES[x]} | Muertos: {median_deaths_sum:.2f} | Muertos mod: {median_deaths_mod_sum:.2f}")
+        median_deaths = median(deaths_list[i])
+        median_deaths_mod = median_deaths * TOWNS_MOD[towns[i]]
+        median_deaths_sum += median_deaths
+        median_deaths_mod_sum += median_deaths_mod
+        print(f"{towns[i]} | Muertos: {median_deaths:.2f} | Muertos mod: {median_deaths_mod:.2f}")
     
     # Calcula cantidad de dias minimos
     if sim_max_days == -1: # supongo que el primer modelo simulado (parana) es el que mas dias tiene
@@ -172,6 +174,8 @@ for x in range(len(SCENARIO_NAMES)):
             bsum_mod += total_median_beds_mod[j][i]
         full_median_beds[i] += bsum
         full_median_beds_mod[i] += bsum_mod
+
+print(f"Total muertos: {median_deaths_sum:.2f} | Total muertos mod: {median_deaths_mod_sum:.2f}")
 
 # Leer camas PMUC
 pmuc_beds_list = []
