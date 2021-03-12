@@ -65,6 +65,8 @@ full_median_beds_mod = []
 sim_max_days = -1
 median_deaths_sum = 0
 median_deaths_mod_sum = 0
+median_icus_sum = 0
+median_icus_mod_sum = 0
 for x in range(len(SCENARIO_NAMES)):
     param_file = PARAMS_FILES[x]
     sink_file = SINK_FILES[x]
@@ -89,13 +91,16 @@ for x in range(len(SCENARIO_NAMES)):
     beds_list = [[[]]]
     deaths_list = []
     last_deaths = 0
+    icus_list = []
+    last_icus = 0
     index = 0
     with open(sink_file, 'r') as fp:
         line = fp.readline() # header
         headers = eval(line)
         beds_index = get_header_index(headers, 'Camas')
         deaths_index = get_header_index(headers, 'Muertos')
-        if beds_index > -1 and deaths_index > -1:
+        icus_index = get_header_index(headers, 'Hospitalizados')
+        if beds_index > -1 and deaths_index > -1 and icus_index > -1:
             runs = -1
             prev_run, prev_tick = -1, -1
             for line in fp.readlines():
@@ -112,30 +117,39 @@ for x in range(len(SCENARIO_NAMES)):
                     # chequea si ya hay muertos de la misma ciudad
                     if len(deaths_list) >= prev_run:
                         deaths_list[prev_run-1].append(last_deaths)
+                        icus_list[prev_run-1].append(last_icus)
                     else:
                         deaths_list.append([last_deaths])
+                        icus_list.append([last_icus])
                     #
                     index = len(beds_list[runs-1]) - 1
                 prev_tick = ticks
                 beds = int(float(splited[beds_index])) # Camas
                 beds_list[runs-1][index].append(beds)
                 last_deaths = int(float(splited[deaths_index])) # Muertos
+                last_icus = int(float(splited[icus_index])) # Hospitalizados
             # falta el ultimo muerto
             if len(deaths_list) >= prev_run:
                 deaths_list[prev_run-1].append(last_deaths)
+                icus_list[prev_run-1].append(last_icus)
             else:
                 deaths_list.append([last_deaths])
+                icus_list.append([last_icus])
             #
         else:
-            sys.exit("Error faltan valores 'Camas' y/o 'Muertos'")
+            sys.exit("Error faltan valores 'Camas', 'Muertos' y/o 'Hospitalizados'")
     
-    # Calcular cantidad de muertos
+    # Calcular cantidad de Muertos y Hospitalizados
     for i in range(len(deaths_list)):
         median_deaths = median(deaths_list[i])
         median_deaths_mod = median_deaths * TOWNS_MOD[towns[i]]
         median_deaths_sum += median_deaths
         median_deaths_mod_sum += median_deaths_mod
         print(f"{towns[i]} | Muertos: {median_deaths:.2f} | Muertos mod: {median_deaths_mod:.2f}")
+        #
+        _ = median(icus_list[i])
+        median_icus_sum += _
+        median_icus_mod_sum += (_ * TOWNS_MOD[towns[i]])
     
     # Calcula cantidad de dias minimos
     if sim_max_days == -1: # supongo que el primer modelo simulado (parana) es el que mas dias tiene
@@ -176,6 +190,7 @@ for x in range(len(SCENARIO_NAMES)):
         full_median_beds_mod[i] += bsum_mod
 
 print(f"Total muertos: {median_deaths_sum:.2f} | Total muertos mod: {median_deaths_mod_sum:.2f}")
+print(f"Total utis: {median_icus_sum:.2f} | Total utis mod: {median_icus_mod_sum:.2f}")
 
 # Leer camas PMUC
 pmuc_beds_list = []
