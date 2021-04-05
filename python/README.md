@@ -18,7 +18,15 @@ pip install -r requirements.txt
 deactivate
 ```
 
-## Funcionamiento del script
+## Script graph_fuller.py (para Entre Rios completo)
+- Toma como parametro el nombre completo de archivo CSV que contiene los reportes de cada simulacion.
+- Genera el archivo con grafica de camas con el nombre "er_(archivo csv)".png.
+* Requiere el archivo csv con el numero de camas:
+```
+CamasUTI_ER_aprox.csv (cambiar en PMUC_BEDS_FILE)
+```
+
+## Script graph_er.py (para Entre Rios dividio en 3)
 - Toma como parametro el ID del trabajo Slurm (ej. 14500).
 - Busca los archivos csv que contienen el ID dado:
 ```
