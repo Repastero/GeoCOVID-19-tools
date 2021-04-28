@@ -25,21 +25,4 @@ deactivate
 ```
 CamasUTI_ER_aprox.csv (cambiar en PMUC_BEDS_FILE)
 ```
-
-## Script graph_er.py (para Entre Rios dividio en 3)
-- Toma como parametro el ID del trabajo Slurm (ej. 14500).
-- Busca los archivos csv que contienen el ID dado:
-```
-parana_14500.csv
-parana_param_14500.csv
-gualeguaychu_14500.csv
-gualeguaychu_param_14500.csv
-concordia_14500.csv
-concordia_param_14500.csv
-```
-- Tambien busca el archivo csv con el numero de camas:
-```
-CamasUTI_ER_aprox.csv (cambiar en PMUC_BEDS_FILE)
-```
-- Si todo funciona correctamente, genera el archivo con grafica de camas.
- 
+- Si todo funciona correctamente, genera el archivo con grafica de UTIs.
