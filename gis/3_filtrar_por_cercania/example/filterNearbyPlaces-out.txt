@@ -1,0 +1,4 @@
+Filtrando por sobreposicion: 2589 > 2538
+Filtrando por cercania y nombre similar: 2538 > 2392
+Total: 2589
+Guardados: 2392
