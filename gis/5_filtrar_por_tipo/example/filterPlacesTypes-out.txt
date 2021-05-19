@@ -1,0 +1,7 @@
+Corrigiendo types erroneos: 117
+Eliminando types vacios: 2392 > 1267
+Separando types dudosos: 1267 > 1252
+Separando types importantes: 1252 > 1211
+Corrigiendo / eliminando segun types: 1211 > 1211
+Total: 2392
+Guardados: 1211
