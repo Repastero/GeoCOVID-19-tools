@@ -1,8 +1,8 @@
 # Generar ubicación de hogares según seccional
 1. Correr script ***getSectoralParcels.py*** para generar archivos shape vacíos: **sectorals**
 2. Cargar layer con archivo shape en QGIS y setear CRS: **WGS 84 - EPSG:4326**
-3. Crear polígonos de un solo trazo, dividiendo en seccionalesla parte habitada.
-4. Setear en cada polígonos el índice de seccional y la cantidad de hogares a crear.
+3. Crear polígonos de un solo trazo, dividiendo en seccionales la parte habitada.
+4. Setear en cada polígono el índice de seccional y la cantidad de hogares a crear.
 5. Guardar cambios en el archivo shape.
 
 ![seccionales](https://i.imgur.com/y6QjdLQl.jpg)
