@@ -11,7 +11,7 @@
 
 5. Volver a correr script ***getPlacesRegions.py*** para que genere archivos csv por cada polígono.
 6. Para verificar, se pueden cargar los archivos csv en QGIS como layers.
-7. Cambiar escala de Symbology a metros y el tamaño a distancia + 5% (el valor en nombre de archivo).
+7. Cambiar escala de Symbology a metros y el tamaño a distancia + 7% (elipsoidal).
 8. Si quedan espacios sin cubrir, se pueden agregar nuevos puntos o superponer un poco cada polígono.
 
 ![radios](https://i.imgur.com/MsCH5Ehl.jpg)

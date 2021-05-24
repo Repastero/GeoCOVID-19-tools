@@ -101,13 +101,17 @@ for line in in_file.readlines():
             # Busca el mejor match para type
             _ = types_found.get(type)
             if _ is None:
+                type_found = False
                 for i in range(len(category)):
                     if Levenshtein.ratio(type, category[i]) >= 0.9:
+                        type_found = True
                         type = gcid[i]
                         types_found[type] = type
                         del category[i]
                         del gcid[i]
                         break
+                if not type_found:
+                    type += '***' # buscar *** para filtrar los tipos desconocidos
         #
         out_file.write(f'{name},{type},{rating},{lat},{lng},{idp}\n')
         out_file.flush() # Por si muere el script, o correr con -u

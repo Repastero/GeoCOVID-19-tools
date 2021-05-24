@@ -3,5 +3,4 @@
 2. Modificar valores de script ***nearbySearchPlaces.py***:
 - **API_KEY**: Api key de usuario de Google Cloud.
 - **INPUT_FILES**: Nombres de archivos de coordenadas.
-- **INPUT_RADIUSES**: Radio de búsqueda por cada archivos de coordenadas (diámetro / 2).
 3. Correr script ***nearbySearchPlaces.py*** y esperar salida.
