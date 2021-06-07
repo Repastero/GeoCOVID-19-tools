@@ -40,9 +40,9 @@ def get_google_maps_type(session, place_id, place_name):
     #print(place_name, '->', description)
     items_text = description.split('·')
     if len(items_text) == 2:
-        return items_text[0].strip()
-    elif len(items_text) > 2:
         return items_text[1].strip()
+    elif len(items_text) > 2:
+        return items_text[2].strip()
     return ''
 
 def load_gmb_categories():
@@ -54,8 +54,12 @@ def load_gmb_categories():
             category.append(splited[1])
 #
 
-with open(OUTPUT_FILE) as f:
-    skip_lines = sum(1 for _ in f)
+skip_lines = 0
+try:
+    with open(OUTPUT_FILE, 'r') as f:
+        skip_lines = sum(1 for _ in f)
+except:
+    pass
 
 out_file = open(OUTPUT_FILE, 'a', encoding='utf-8')
 if skip_lines == 0:
@@ -105,8 +109,8 @@ for line in in_file.readlines():
                 for i in range(len(category)):
                     if Levenshtein.ratio(type, category[i]) >= 0.9:
                         type_found = True
+                        types_found[type] = gcid[i]
                         type = gcid[i]
-                        types_found[type] = type
                         del category[i]
                         del gcid[i]
                         break
