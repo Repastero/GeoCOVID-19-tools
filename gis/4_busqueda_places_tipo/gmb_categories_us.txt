@@ -639,6 +639,7 @@ check_cashing_service	Check cashing service
 cheese_manufacturer	Cheese manufacturer
 cheese_shop	Cheese shop
 cheesesteak_restaurant	Cheesesteak restaurant
+chemical_industry	Chemical industry
 chemical_engineer	Chemical engineer
 chemical_exporter	Chemical exporter
 chemical_manufacturer	Chemical manufacturer
@@ -1155,6 +1156,7 @@ east_african_restaurant	East African restaurant
 east_javanese_restaurant	East Javanese restaurant
 eastern_european_restaurant	Eastern European restaurant
 eastern_orthodox_church	Eastern Orthodox Church
+Eatery	restaurant
 eating_disorder_treatment_center	Eating disorder treatment center
 eclectic_restaurant	Eclectic restaurant
 ecological_park	Ecological park
@@ -1370,6 +1372,7 @@ finnish_restaurant	Finnish restaurant
 fire_alarm_supplier	Fire alarm supplier
 fire_damage_restoration_service	Fire damage restoration service
 fire_department_equipment_supplier	Fire department equipment supplier
+fire_extinguisher	Fire extinguisher
 fire_fighters_academy	Fire fighters academy
 fire_protection_consultant	Fire protection consultant
 fire_protection_equipment_supplier	Fire protection equipment supplier
@@ -1389,6 +1392,7 @@ fish_farm	Fish farm
 fish_processing	Fish processing
 fish_spa	Fish spa
 fish_store	Fish store
+fishing	Fishing
 fishing_camp	Fishing camp
 fishing_charter	Fishing charter
 fishing_club	Fishing club
@@ -1440,6 +1444,7 @@ foot_bath	Foot bath
 foot_care	Foot care
 foot_massage_parlor	Foot massage parlor
 football_club	Football club
+football_field	Football Field
 football_field	American football field
 ford_dealer	Ford dealer
 foreclosure_service	Foreclosure service
@@ -1489,6 +1494,7 @@ fugu_restaurant	Fugu restaurant
 full_dress_rental_service	Full dress rental service
 full_gospel_church	Full Gospel church
 function_room_facility	Function room facility
+function_room_facility	Meeting room
 fund_management_company	Fund management company
 funeral_director	Funeral director
 funeral_home	Funeral home
@@ -1522,6 +1528,7 @@ garbage_dump_service	Garbage dump service
 garden	Garden
 garden_building_retail	Garden building supplier
 garden_center	Garden center
+garden_center	Gardening products and services
 garden_furniture_store	Garden furniture shop
 gardener	Gardener
 garment_exporter	Garment exporter
@@ -2222,6 +2229,7 @@ marriage_celebrant	Marriage celebrant
 marriage_counselor	Marriage or relationship counselor
 marriage_license_bureau	Marriage license bureau
 martial_arts_club	Martial arts club
+martial_arts_school	Martial arts
 martial_arts_school	Martial arts school
 martial_arts_supply_store	Martial arts supply store
 maserati_dealer	Maserati dealer
@@ -3323,6 +3331,7 @@ snowmobile_rental_service	Snowmobile rental service
 soapland	Soapland
 soba_noodle_shop	Soba noodle shop
 soccer_club	Soccer club
+soccer_field	Soccer
 soccer_field	Soccer field
 soccer_practice	Soccer practice
 soccer_store	Soccer store
@@ -3608,6 +3617,7 @@ tex_mex_restaurant	Tex-Mex restaurant
 textile_engineer	Textile engineer
 textile_exporter	Textile exporter
 textile_mill	Textile mill
+textile_service	Textiles
 thai_massage_therapist	Thai massage therapist
 thai_restaurant	Thai restaurant
 theater_company	Theater company
@@ -3698,7 +3708,9 @@ translator	Translator
 transmission_shop	Transmission shop
 transportation_escort_service	Transportation escort service
 transportation_service	Transportation service
+transportation_service	Transportation infrastructure
 travel_agency	Travel agency
+travel_agency	Travel services
 travel_agency	Tourism
 travel_clinic	Travel clinic
 travel_lounge	Travel lounge

@@ -18,8 +18,9 @@ types_found = {}
 gcid = []
 category = []
 
-def get_google_maps_type(session, place_id, place_name):
-    time.sleep(30) # 30 segundos minimo entre consulta
+def get_google_maps_type(session, place_id, place_name, first_search=False):
+    if not first_search:
+        time.sleep(30) # 30 segundos minimo entre consulta
     params = dict(
         api=1,
         query=place_name,
@@ -53,7 +54,7 @@ def load_gmb_categories():
             gcid.append(splited[0])
             category.append(splited[1])
 #
-
+first_search = True
 skip_lines = 0
 try:
     with open(OUTPUT_FILE, 'r') as f:
@@ -84,14 +85,15 @@ for line in in_file.readlines():
         continue
     #
     splited = line[:-1].split(',') # borrar /n
-    if int(splited[2]) < MIN_RATINGS: # ratings
+    if len(splited) < 6 or int(splited[2]) < MIN_RATINGS: # ratings
         continue
     #
     type = splited[1] # type
     if not type:
         idp = splited[5]
         name = splited[0] # no hace falta pasar comas a punto y coma
-        type = get_google_maps_type(request_session, idp, name)
+        type = get_google_maps_type(request_session, idp, name, first_search)
+        first_search = False
         # Extra
         rating = splited[2]
         lat = splited[3]
@@ -116,6 +118,8 @@ for line in in_file.readlines():
                         break
                 if not type_found:
                     type += '***' # buscar *** para filtrar los tipos desconocidos
+            else:
+                type = _
         #
         out_file.write(f'{name},{type},{rating},{lat},{lng},{idp}\n')
         out_file.flush() # Por si muere el script, o correr con -u

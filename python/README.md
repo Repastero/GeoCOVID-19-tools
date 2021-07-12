@@ -19,16 +19,29 @@ deactivate
 ```
 
 ## Script graph_fuller.py (para todos los departamentos o no)
-- Toma como parametro el nombre completo de archivo CSV que contiene los reportes de cada simulacion.
-- Genera el archivo con grafica de camas con el nombre "er_(archivo csv)".png.
-* Requiere el archivo csv con el numero de camas:
+- Toma como parámetro el nombre completo de archivo CSV que contiene los reportes de cada simulacion.
+- Genera el archivo con gráfica de camas con el nombre "er_(archivo csv)".png.
+* Requiere el archivo csv con el número de camas:
 ```
 CamasUTI_ER_aprox.csv (cambiar en PMUC_BEDS_FILE)
 ```
-- Si todo funciona correctamente, genera el archivo con grafica de UTIs.
+- Si todo funciona correctamente, genera el archivo con gráfica de UTIs.
+
+## Script graph_santafe.py (para todos los departamentos o no)
+- Toma como parámetro el nombre completo de archivo CSV que contiene los reportes de cada simulación.
+- Genera el archivo con gráfica de fallecidos semanales con el nombre "sfe_(archivo csv)".png.
+* Requiere el archivo csv con el número de fallecidos semanales:
+```
+weekly-deaths.csv (cambiar en WEEKLY_DEATHS_FILE)
+```
+* El índice de días del axis X se modifica para poder identificar el inicio de infección de los fallecidos:
+```
+Por defecto 19 días previos al fallecimiento (modificar FIS_TILL_DEATH)
+```
+- Si todo funciona correctamente, genera el archivo con gráfica de fallecidos semanales.
 
 ## Script median_report.py
-- Toma como parametro el nombre completo de archivo CSV que contiene los reportes de cada simulación.
+- Toma como parámetro el nombre completo de archivo CSV que contiene los reportes de cada simulación.
 - El archivo de reporte puede ser de cualquier tipo: contactos, contagios diarios, transporte público, etc.
 - Genera un archivo de salida con la mediana de todos los valores del reporte dado.
 * Requiere que el reporte contenga los valores de *random_seed* y *tick*.
