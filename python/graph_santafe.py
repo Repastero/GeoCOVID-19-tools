@@ -97,14 +97,14 @@ with open(WEEKLY_DEATHS_FILE, 'r') as fp:
 
 # Restar dias para calcular inicio infeccion
 weeks_offset = ceil(FIS_TILL_DEATH / 7)
-total_median_deaths[:-weeks_offset] = total_median_deaths[weeks_offset:]
-pmuc_deaths_list[:-weeks_offset] = pmuc_deaths_list[weeks_offset:]
+total_median_deaths[:] = total_median_deaths[weeks_offset:]
+pmuc_deaths_list[:] = pmuc_deaths_list[weeks_offset:]
 X_FIRST_DAY += FIS_TILL_DEATH - (7 * weeks_offset)
 
 # Informar cantidad de muertos
-print(f"Total muertos modelo: {sum(total_median_deaths):.2f} vs {sum(pmuc_deaths_list[:len(total_median_deaths)]):.2f}")
+print(f"Total fallecidos modelo: {sum(total_median_deaths):.2f} vs {sum(pmuc_deaths_list[:len(total_median_deaths)]):.2f}")
 
-max_weeks = len(pmuc_deaths_list)
+max_weeks = len(pmuc_deaths_list) if len(pmuc_deaths_list) > len(total_median_deaths) else len(total_median_deaths)
 short_name = CSV_FILE[:-4]
 out_file_name = f"sfe_{short_name}.png"
 # Queda graficar nomas
@@ -112,7 +112,7 @@ plt.style.use('dark_background')
 fig, ax = plt.subplots(figsize=(16, 4))
 plt.title(f"Fallecidos por semana - {FIS_TILL_DEATH} dias antes")
 ax.plot(range(len(total_median_deaths)), total_median_deaths, 'r', label='Modelo') # en blanco camas pmuc
-ax.plot(range(max_weeks), pmuc_deaths_list, 'w', label='SISA') # en blanco camas pmuc
+ax.plot(range(len(pmuc_deaths_list)), pmuc_deaths_list, 'w', label='SISA') # en blanco camas pmuc
 plt.xticks(range(max_weeks), range(X_FIRST_DAY, X_FIRST_DAY + (max_weeks*7), 7))
 plt.ylim([0, Y_AXIS_SCALE])
 plt.xlim([0, max_weeks-1])
@@ -121,4 +121,4 @@ ax.legend()
 fig.tight_layout()
 # Guardar imagen
 plt.savefig(out_file_name, bbox_inches='tight')
-print(f"Grafica de casos con archivo: {CSV_FILE} > {out_file_name}")
+print(f"Grafica de fallecidos con archivo: {CSV_FILE} > {out_file_name}")
