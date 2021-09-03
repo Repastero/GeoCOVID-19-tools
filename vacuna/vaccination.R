@@ -1,13 +1,14 @@
-# Autor: Pierino Martín Goette
+# Autor: Pierino Martn Goette
 # Datos obtenidos a través de:
 # http://datos.salud.gob.ar/dataset/vacunas-contra-covid19-dosis-aplicadas-en-la-republica-argentina
 # Instalamos los paquetes: Descomentar (Ctrl+c)
 # install.packages("readr")
-# install.packages("tibble")
-# install.packages("tidyverse")
-# install.packages("lubridate")
-# install.packages("forcats")
-# install.packages("stringi")
+ 
+#install.packages("tibble")
+#install.packages("tidyverse")
+#install.packages("lubridate")
+#install.packages("stringi")
+#install.packages("forcats")
 
 rm(list=ls())
 
@@ -29,7 +30,7 @@ vaccinationArg<-tibble(read.csv("datos_nomivac_covid19.csv", encoding="UTF-8"))
 
 # Se descomenta de acuerdo a los datos de la provincia que se desea obtener
 
-provincia<-("Entre Ríos")
+provincia<-("Entre R�os")
 # provincia<-("La Rioja")
 # provincia<-("Santa Fe")
 
@@ -94,14 +95,16 @@ vaccinationDoseTwo <- vaccination %>%
                       filter(orden_dosis==2) %>%
                       select(phase,depto_residencia,grupo_etario, vacuna)
 
+
 # Crear un csv para modelar
-datosAux<-as.data.frame(table(5$phase,vaccinationDoseOne$depto_residencia ,vaccinationDoseOne$grupo_etario))
+
+datosAux<-as.data.frame(table(vaccinationDoseOne$phase,vaccinationDoseOne$depto_residencia ,vaccinationDoseOne$grupo_etario))
 names(datosAux)<- c("phase","Departamento", "GrupoEtario", "Freq")
 datosModeloDoseOne <- datosAux %>% pivot_wider(names_from = GrupoEtario, values_from = Freq) %>% tibble()
 
 # Cantidad  de dosis por departamento estas linea debe completarse de acuerdo a la cantidad de agentes que se está representando según el departamento
 # Entre Rios fuente: https://github.com/Repastero/GeoCOVID-19-tools/blob/master/datos/muertos%20er/reporte_epidem_16022021.ods
-if(provincia=="Entre Ríos"){
+if(provincia=="Entre R�os"){
   poblacionPorDepartamento<- tibble(Departamento=unique(vaccination$depto_residencia), 
                                     porcentajePoblacionRepresentada=c(76.92,50.7,42.99,30.00,89.56,70.74,76.21,82.9,
                                                                       53.47,73.2,82.90,39.95,89.03,69.66,60.73,35.57,80.14,35.57))
@@ -128,7 +131,8 @@ if(provincia=="Entre Ríos"){
 for(i in 1:nrow(poblacionPorDepartamento)){
   for(j in 1:nrow(datosModeloDoseOne)){
     if(poblacionPorDepartamento$Departamento[i]==datosModeloDoseOne$Departamento[j]){
-      datosModeloDoseOne[j,(c(ncol(datosModeloDoseTwo)-(length(levels(vaccinationDoseOne$grupo_etario))-1)):ncol(datosModeloDoseTwo))]<-round(datosModeloDoseOne[j,(c(ncol(datosModeloDoseTwo)-(length(levels(vaccinationDoseOne$grupo_etario))-1)):ncol(datosModeloDoseTwo))]*poblacionPorDepartamento$porcentajePoblacionRepresentada[i]/100)
+      datosModeloDoseOne[j,(c(ncol(datosModeloDoseOne)-(length(levels(vaccinationDoseOne$grupo_etario))-1)):ncol(datosModeloDoseOne))]<-
+        round(datosModeloDoseOne[j,(c(ncol(datosModeloDoseOne)-(length(levels(vaccinationDoseOne$grupo_etario))-1)):ncol(datosModeloDoseOne))]*poblacionPorDepartamento$porcentajePoblacionRepresentada[i]/100)
     }
   }
   
