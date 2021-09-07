@@ -83,7 +83,7 @@ for i in rnd_indexes:
             full_data.extend(results)
         #
         while 'next_page_token' in data:
-            time.sleep(.5) # .5 segundo de delay por las dudas
+            time.sleep(2) # delay necesario
             params = dict(
                 key=API_KEY,
                 language=LANGUAGE,
