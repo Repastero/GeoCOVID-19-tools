@@ -7,27 +7,36 @@
 ```
 Archivo 'datos_nomivac_covid19.zip' no encontrado
 Iniciando descarga:
-Tiempo de descarga: 4.82 minutos
+Tiempo de descarga: 5.12 minutos
 Archivo CSV: datos_nomivac_covid19.csv
-Tamaño: 7330 MB
-Fecha de modificacion: 25/9/2021 7:33 hs
+Tamaño: 7366 MB
+Fecha de modificacion: 26/9/2021 19:55 hs
 Iniciando lectura:
-Tiempo de lectura: 6.3 minutos
+Tiempo de lectura: 6.31 minutos
 
 Provincia: Santa Fe
-Dosis totales aplicadas: 4213298
+Dosis tipo 1 aplicadas: 2385216
 AstraZeneca, COVISHIELD, Cansino, Moderna, Pfizer, Sinopharm, Sputnik
-0.3198, 0.0098, 0.0002, 0.057, 0.0025, 0.3203, 0.2904
+0.3103, 0.0174, 0.0004, 0.0117, 0.006, 0.3028, 0.3514
+Dosis tipo 2 aplicadas: 1841051
+AstraZeneca, COVISHIELD, Moderna, Pfizer, Sinopharm, Sputnik
+0.3311, 0.0, 0.1156, 0.0, 0.343, 0.2103
 
 Provincia: Entre Ríos
-Dosis totales aplicadas: 1471775
+Dosis tipo 1 aplicadas: 878152
 AstraZeneca, COVISHIELD, Cansino, Moderna, Pfizer, Sinopharm, Sputnik
-0.3146, 0.0118, 0.0005, 0.047, 0.0001, 0.3406, 0.2854
+0.3042, 0.0194, 0.001, 0.0122, 0.0001, 0.329, 0.3341
+Dosis tipo 2 aplicadas: 599471
+AstraZeneca, COVISHIELD, Moderna, Pfizer, Sinopharm, Sputnik
+0.3301, 0.0006, 0.0985, 0.0001, 0.357, 0.2137
 
 Provincia: La Rioja
-Dosis totales aplicadas: 457511
+Dosis tipo 1 aplicadas: 264709
 AstraZeneca, COVISHIELD, Cansino, Moderna, Pfizer, Sinopharm, Sputnik
-0.2913, 0.0156, 0.0009, 0.0671, 0.0018, 0.3292, 0.2941
+0.28, 0.0267, 0.0017, 0.0325, 0.0032, 0.3117, 0.3442
+Dosis tipo 2 aplicadas: 195258
+AstraZeneca, COVISHIELD, Moderna, Pfizer, Sinopharm, Sputnik
+0.307, 0.0005, 0.1141, 0.0, 0.3524, 0.226
 ```
 - Se crea un directorio por provincia encontrada en *dataset.py* (ej: **Entre Ríos**, **Santa Fe**).
   - Los sub directorios se deben copiar al directorio **data** del projecto *GeoCOVID-19*.

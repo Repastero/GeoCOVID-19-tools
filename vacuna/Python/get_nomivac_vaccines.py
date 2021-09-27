@@ -10,6 +10,9 @@ from timeit import default_timer as timer
 from dataset import (JURISDICCION_NOMI, DEPTO_NOMI, DEPTO_REPAST, 
                     AGE_GROUP_EQUIV, AGE_GROUP_REPAST_COUNT, VACCINE_AG_COUNTER, DEPTO_REPAST_POP)
 
+NOMIVAC_FILE_URL = 'https://sisa.msal.gov.ar/datos/descargas/covid-19/files/datos_nomivac_covid19.zip'
+NOMIVAC_FILE_NAME = 'datos_nomivac_covid19.zip'
+
 START_DATE = datetime(2020,12,28) # lunes 28 de diciembre (en realidad es el Martes 29)
 START_DAY = 362 # indice primer dia (363 en realidad)
 
@@ -45,14 +48,13 @@ def show_progress(cur_p, max_p):
 def show_block_progress(block_num, block_size, total_size):
     show_progress(block_num * block_size, total_size)
 
-def get_nomivac_file(zip_name='datos_nomivac_covid19.zip'):
+def get_nomivac_file(zip_name=NOMIVAC_FILE_NAME):
     if not os.path.isfile(zip_name):
         import urllib.request
         print(f"Archivo '{zip_name}' no encontrado\nIniciando descarga:")
-        url = 'https://sisa.msal.gov.ar/datos/descargas/covid-19/files/datos_nomivac_covid19.zip'
         start_timer = timer()
         try:
-            urllib.request.urlretrieve(url, zip_name, reporthook=show_block_progress)
+            urllib.request.urlretrieve(NOMIVAC_FILE_URL, zip_name, reporthook=show_block_progress)
         except Exception as e:
             print(e)
             exit('Error al descargar archivo nomivac!')
@@ -66,7 +68,7 @@ prov_id_index, depto_id_index, fecha_index, grupo_index, dosis_index, vacuna_ind
 header_found = False
 column_count = 15
 
-step = 0x100000
+step = 0x100000 # lineas
 progress_step = step
 max_lines = -1 # para testeo
 doses_dict = dict() # contador dosis
@@ -113,31 +115,34 @@ with zip_file_object.open(file_info.filename, 'r') as csvfile:
                 if row[depto_id_index] in DEPTO_NOMI[province_id]:
                     vac_week = get_date_week(row[fecha_index])
                     if vac_week != -1: # si fecha ok
-                        depto = DEPTO_REPAST[province_id][DEPTO_NOMI[province_id][row[depto_id_index]]]
-                        vaccine = row[vacuna_index]
-                        if province_id not in doses_dict:
-                            doses_dict[province_id] = dict()
-                            vaccines_counter[province_id] = {vaccine : 0}
-                        
-                        if vaccine not in vaccines_counter[province_id]:
-                            vaccines_counter[province_id][vaccine] = 1
-                        else:
-                            vaccines_counter[province_id][vaccine] += 1
-                        
-                        if depto not in doses_dict[province_id]:
-                            doses_dict[province_id][depto] = [dict(), dict()] # asumo 2 dosis
                         vac_dose = int(row[dosis_index])-1 # indice tipo dosis
+                        vac_type = row[vacuna_index] # tipo vacuna
+                        if province_id not in doses_dict:
+                            # Crear contadores para provincia
+                            doses_dict[province_id] = dict()
+                            vaccines_counter[province_id] = [dict(), dict()] # asumo 2 dosis
+                        # Sumar tipo de dosis aplicada
+                        if vac_type not in vaccines_counter[province_id][vac_dose]:
+                            vaccines_counter[province_id][vac_dose][vac_type] = 1
+                        else:
+                            vaccines_counter[province_id][vac_dose][vac_type] += 1
+                        #
+                        depto = DEPTO_REPAST[province_id][DEPTO_NOMI[province_id][row[depto_id_index]]]
+                        if depto not in doses_dict[province_id]:
+                            # Crear contador para departamento
+                            doses_dict[province_id][depto] = [dict(), dict()] # asumo 2 dosis
+                        # Sumar dosis aplicada
                         dose_counter = doses_dict[province_id][depto][vac_dose].get(vac_week)
                         if not dose_counter:
                             dose_counter = VACCINE_AG_COUNTER.copy()
                             doses_dict[province_id][depto][vac_dose][vac_week] = dose_counter
                         dose_counter[row[grupo_index]] += 1
+                        #
 print(f'Tiempo de lectura: {round((timer() - start_timer) / 60, 2)} minutos')
 
 # Recorre provincias
 for key_prov in doses_dict.keys():
     print(f'\nProvincia: {JURISDICCION_NOMI[key_prov]}')
-    prov_doses_count = 0 # suma dosis por provincia
     # Recorre departamentos
     for key_depto, values_depto in doses_dict[key_prov].items():
         # Crea directorio de provincia / depto
@@ -212,7 +217,6 @@ for key_prov in doses_dict.keys():
             for out_file in out_files:
                 out_file.close()
         
-        prov_doses_count += sum(real_doses_count)
         if PRINT_OUT_MORE_INFO:
             # Imprime cantidad dosis totales y modificadas por poblacion
             _ = ' + '.join(str(x) for x in real_doses_count)
@@ -220,19 +224,19 @@ for key_prov in doses_dict.keys():
             _ = ' + '.join(str(x) for x in mod_doses_count)
             print(f' | {_} = {sum(mod_doses_count)}')
     
-    print(f'Dosis totales aplicadas: {prov_doses_count}')
     # Imprime tipos vacunas y proporcion
-    total_doses = sum(vaccines_counter[key_prov].values())
-    doses_types = []
-    doses_perc = []
-    initial_perc = 1
-    for i, (type, doses) in enumerate(sorted(vaccines_counter[key_prov].items())):
-        doses_types.append(type)
-        if i < len(vaccines_counter[key_prov]) - 1:
-            _ = round(doses / total_doses, 4)
-            initial_perc -= _
-        else:
-            _ = round(initial_perc, 4)
-        doses_perc.append(str(_))
-    print(', '.join(doses_types))
-    print(', '.join(doses_perc))
+    for dose_idx in range(len(vaccines_counter[key_prov])):
+        total_doses = sum(vaccines_counter[key_prov][dose_idx].values())
+        print(f'Dosis tipo {dose_idx+1} aplicadas: {total_doses}')
+        doses_types, doses_perc = [], []
+        initial_perc = 1
+        for i, (type, doses) in enumerate(sorted(vaccines_counter[key_prov][dose_idx].items())):
+            doses_types.append(type)
+            if i < len(vaccines_counter[key_prov][dose_idx]) - 1:
+                _ = round(doses / total_doses, 4)
+                initial_perc -= _
+            else: # el % del ultimo tipo, es el resto del 100%
+                _ = round(initial_perc, 4)
+            doses_perc.append(str(_))
+        print(', '.join(doses_types))
+        print(', '.join(doses_perc))
