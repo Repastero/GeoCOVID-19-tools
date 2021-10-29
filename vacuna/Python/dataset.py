@@ -3,6 +3,10 @@
 # Cantidad grupos etarios en modelo
 AGE_GROUP_REPAST_COUNT = 5
 
+VACCINE_ALIAS = {
+    'COVISHIELD' : 'AstraZeneca',
+}
+
 # Equivalencia entre grupos etarios nomivac -> modelo
 AGE_GROUP_EQUIV = {
     '<18'   : [1,  0,  0,   0,   0],
