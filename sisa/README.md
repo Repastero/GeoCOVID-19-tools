@@ -1,7 +1,7 @@
 ## Generar archivo CSV con la cantidad de fallecidos por semana, según reporte de SISA
-- Clasificación de casos:
-Por defecto se toman como válidos los casos confirmados por laboratorio y criterio "clínico-epidemiologico", de esta forma se obtiene un resultado comparable con otras fuentes.
-A continuación se muestran todas las clasificaciones ordenadas por incidencia:
+- Clasificación de casos:<br/>
+Por defecto se toman como válidos los casos confirmados por laboratorio y criterio "clínico-epidemiologico",<br/>
+de esta forma se obtiene un resultado comparable con otras fuentes.<br/>A continuación se muestran todas las clasificaciones ordenadas por incidencia:
 ```
 Caso confirmado por laboratorio - Fallecido
 Caso Descartado
@@ -18,14 +18,14 @@ Otro diagnostico
 pip install -U openpyxl
 ```
 - Modificar valores en script:
-  - **INPUT_FILE**: ruta archivo de reporte csv o xlsx.
-  - **OUTPUT_FILE**: ruta archivo de salida csv.
+    - **INPUT_FILE**: ruta archivo de reporte csv o xlsx.
+    - **OUTPUT_FILE**: ruta archivo de salida csv.
 - Opcional, descartar casos de personas que:
-  - **PROVI_FILTER**: residan fuera de la provincia.
-  - **DEPTO_FILTER**: residan fuera del departamento.
-  - **LOCAL_FILTER**: residan fuera de la localidad.
+    - **PROVI_FILTER**: residan fuera de la provincia.
+    - **DEPTO_FILTER**: residan fuera del departamento.
+    - **LOCAL_FILTER**: residan fuera de la localidad.
 - Correr script *get_sisa_weekly_deaths.py* desde consola.
-  - Se debe crear el archivo **OUTPUT_FILE** y mostrar un mensaje similar a:
+    - Se debe crear el archivo **OUTPUT_FILE** y mostrar un mensaje similar a:
 ```
 Leyendo archivo CSV ...
 Tiempo: 0.69 minutos
